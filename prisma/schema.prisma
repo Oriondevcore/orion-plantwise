@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Plant {
+  id          String   @id @default(cuid())
+  name        String
+  species     String?
+  nickname    String?
+  imageUrl    String?
+  location    String?
+  healthStatus String   @default("unknown") // healthy, warning, critical, unknown
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  diagnoses     Diagnosis[]
+  careReminders CareReminder[]
+  careActivities CareActivity[]
+}
+
+model Diagnosis {
+  id          String   @id @default(cuid())
+  plantId     String
+  imageUrl    String
+  species     String?
+  issues      String   // JSON array of detected issues
+  confidence  Float    @default(0)
+  description String   // Full AI diagnosis text
+  fixes       String   // Step-by-step fix recommendations (markdown)
+  speciesInfo String   // Detailed species information (markdown)
+  ragContext  String?  // RAG-referenced context
+  createdAt   DateTime @default(now())
+
+  plant Plant @relation(fields: [plantId], references: [id], onDelete: Cascade)
+}
+
+model CareReminder {
+  id          String   @id @default(cuid())
+  plantId     String
+  type        String   // watering, fertilizing, repotting, pruning
+  frequency   String   // daily, every_2_days, every_3_days, weekly, biweekly, monthly
+  lastDone    DateTime?
+  nextDue     DateTime?
+  enabled     Boolean  @default(true)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  plant Plant @relation(fields: [plantId], references: [id], onDelete: Cascade)
+}
+
+model CareActivity {
+  id          String   @id @default(cuid())
+  plantId     String
+  type        String   // watering, fertilizing, repotting, pruning, other
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  plant Plant @relation(fields: [plantId], references: [id], onDelete: Cascade)
+}
