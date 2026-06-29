@@ -166,7 +166,7 @@ function HomeView() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Leaf className="w-7 h-7 text-primary" /> PlantWise
+            <Leaf className="w-7 h-7 text-primary" /> Orion PlantWise
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">Your smart plant health companion</p>
         </div>
@@ -855,7 +855,7 @@ function SettingsView() {
           <div className="w-12 h-12 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
             <Leaf className="w-6 h-6 text-primary" />
           </div>
-          <h3 className="font-semibold">PlantWise AI</h3>
+          <h3 className="font-semibold">Orion PlantWise</h3>
           <p className="text-xs text-muted-foreground mt-1">v1.0.0 — Smart Plant Disease Detector</p>
           <p className="text-[11px] text-muted-foreground/70 mt-2">
             Powered by AI vision, plant pathology databases, and expert horticultural knowledge.

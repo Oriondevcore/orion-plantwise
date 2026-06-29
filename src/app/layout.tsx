@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PlantWise AI - Smart Plant Disease Detector",
+  title: "Orion PlantWise - AI Plant Health",
   description: "AI-powered plant health diagnostics. Identify species, detect diseases, and get step-by-step treatment plans.",
-  keywords: ["plant", "disease", "AI", "diagnosis", "plant care", "botany"],
+  keywords: ["plant", "disease", "AI", "diagnosis", "plant care", "botany", "orion"],
   icons: {
-    icon: "/plant-logo.png",
+    icon: "/Orion-logo.png",
   },
 };
 
