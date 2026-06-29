@@ -72,4 +72,4 @@ MIT — see [LICENSE](LICENSE)
 
 ---
 
-Built with ❤️ by [Orion Dev Core](https://oriondevcore.com)
+Built by [Orion Dev Core](https://oriondevcore.com)
