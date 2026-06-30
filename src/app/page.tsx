@@ -8,7 +8,7 @@ import {
   CheckCircle2, XCircle, Clock, ChevronRight, Trash2, Edit3, Heart,
   ArrowLeft, FileText, Calendar, Sparkles, Shield, TrendingUp,
   Sun, Flower2, Shovel, Scissors, Beaker, X, Upload, Loader2,
-  Info, ChevronDown, ChevronUp, Activity, Stethoscope, BookOpen
+  Info, ChevronDown, ChevronUp, Activity, Stethoscope, BookOpen, Bell
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -79,15 +79,15 @@ function ActivityIcon({ type }: { type: string }) {
 function BottomNav() {
   const { currentView, setCurrentView } = useAppStore();
   const items = [
-    { id: 'home' as const, icon: Leaf, label: 'My Plants' },
-    { id: 'diagnose' as const, icon: Stethoscope, label: 'Diagnose' },
-    { id: 'guide' as const, icon: BookOpen, label: 'Guide' },
-    { id: 'settings' as const, icon: Settings, label: 'Settings' },
+    { id: 'home' as const, icon: Leaf, label: 'My Plants', activeColor: 'text-emerald-400', activeBg: 'bg-emerald-400/15', glow: 'rgba(52,211,153,0.15)' },
+    { id: 'diagnose' as const, icon: Stethoscope, label: 'Diagnose', activeColor: 'text-sky-400', activeBg: 'bg-sky-400/15', glow: 'rgba(56,189,248,0.15)' },
+    { id: 'guide' as const, icon: BookOpen, label: 'Guide', activeColor: 'text-amber-400', activeBg: 'bg-amber-400/15', glow: 'rgba(251,191,36,0.15)' },
+    { id: 'settings' as const, icon: Settings, label: 'Settings', activeColor: 'text-purple-400', activeBg: 'bg-purple-400/15', glow: 'rgba(192,132,252,0.15)' },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t border-border safe-area-bottom">
-      <div className="max-w-lg mx-auto flex items-center justify-around py-1.5 px-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#080808]/90 backdrop-blur-xl border-t border-white/5 safe-area-bottom">
+      <div className="max-w-lg mx-auto flex items-center justify-around py-2 px-2">
         {items.map((item) => {
           const active = currentView === item.id;
           const Icon = item.icon;
@@ -95,14 +95,15 @@ function BottomNav() {
             <button
               key={item.id}
               onClick={() => setCurrentView(item.id)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-200 min-w-[64px] ${
+              className={`relative flex flex-col items-center gap-0.5 px-4 py-2 rounded-2xl transition-all duration-300 min-w-[68px] ${
                 active
-                  ? 'text-primary bg-primary/10 scale-105'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  ? `${item.activeColor} ${item.activeBg} scale-105`
+                  : 'text-white/30 hover:text-white/60 hover:bg-white/5'
               }`}
+              style={active ? { boxShadow: `0 0 20px ${item.glow}` } : {}}
             >
-              <Icon className={`w-5 h-5 transition-transform duration-200 ${active ? 'scale-110' : ''}`} />
-              <span className={`text-[10px] font-medium ${active ? 'font-semibold' : ''}`}>{item.label}</span>
+              <Icon className={`w-5.5 h-5.5 transition-all duration-300 ${active ? 'scale-110 drop-shadow-lg' : ''}`} />
+              <span className={`text-[10px] font-medium transition-all duration-300 ${active ? 'font-bold tracking-wide' : ''}`}>{item.label}</span>
             </button>
           );
         })}
@@ -200,22 +201,38 @@ function HomeView() {
       {loading ? (
         <div className="grid grid-cols-2 gap-3">
           {[1, 2, 3, 4].map(i => (
-            <Skeleton key={i} className="h-40 rounded-2xl" />
+            <div key={i} className="skeleton-garden h-40 rounded-2xl" />
           ))}
         </div>
       ) : plants.length === 0 ? (
-        <Card className="p-8 text-center border-dashed border-2 border-primary/20">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-            <Leaf className="w-8 h-8 text-primary" />
+        <div className="relative overflow-hidden rounded-3xl garden-card-glow p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
+          <div className="absolute inset-0 pointer-events-none">
+            <svg className="absolute top-6 left-8 w-12 h-12 text-emerald-400/30 leaf-float" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20c4 0 8-2 8-6.5 0-2-.92-3.69-2.5-5.5C13 10 12 12 10 14c1.5-1.5 2-3.5 2-5.5C12 4.5 9 2 5 2c0 0 6 1 12 6 0 0-2-1.5-4-2.5C12.5 5.5 14 7 14 9c0 3-2 5-4 5 2 0 4-1 5-2 1 1 2 2 2 4 0 3-3 5-5 5 2 0 4-1 5-2 1 1 2 2 2 4 0 3-3 5-5 5 2 0 4-1 5-2 0 4-4 6-8 6-5 0-9-3-9-8 0-4 2-7 6-9z"/>
+            </svg>
+            <svg className="absolute top-10 right-10 w-10 h-10 text-pink-400/25 flower-float" viewBox="0 0 24 24" fill="currentColor" style={{ animationDelay: '1.5s' }}>
+              <path d="M12 2C9 2 7 4 7 7c0 1.5.5 2.8 1.5 3.8C7.5 11.5 6 13 6 15c0 1.5.8 2.8 2 3.5-1.2.7-2 2-2 3.5 0 2 2 4 4 4s4-2 4-4c0-1.5-.8-2.8-2-3.5 1.2-.7 2-2 2-3.5 0-2-1.5-3.5-2.5-4.2.8-.8 1.5-2 1.5-3.8 0-3-2-5-5-5z"/>
+            </svg>
+            <svg className="absolute bottom-20 left-12 w-8 h-8 text-amber-400/25 leaf-float" viewBox="0 0 24 24" fill="currentColor" style={{ animationDelay: '3s' }}>
+              <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20c4 0 8-2 8-6.5 0-2-.92-3.69-2.5-5.5C13 10 12 12 10 14c1.5-1.5 2-3.5 2-5.5C12 4.5 9 2 5 2c0 0 6 1 12 6 0 0-2-1.5-4-2.5C12.5 5.5 14 7 14 9c0 3-2 5-4 5 2 0 4-1 5-2 1 1 2 2 2 4 0 3-3 5-5 5 2 0 4-1 5-2 1 1 2 2 2 4 0 3-3 5-5 5 2 0 4-1 5-2 0 4-4 6-8 6-5 0-9-3-9-8 0-4 2-7 6-9z"/>
+            </svg>
+            <svg className="absolute bottom-32 right-16 w-9 h-9 text-emerald-400/20 flower-float" viewBox="0 0 24 24" fill="currentColor" style={{ animationDelay: '4.5s' }}>
+              <path d="M12 2C9 2 7 4 7 7c0 1.5.5 2.8 1.5 3.8C7.5 11.5 6 13 6 15c0 1.5.8 2.8 2 3.5-1.2.7-2 2-2 3.5 0 2 2 4 4 4s4-2 4-4c0-1.5-.8-2.8-2-3.5 1.2-.7 2-2 2-3.5 0-2-1.5-3.5-2.5-4.2.8-.8 1.5-2 1.5-3.8 0-3-2-5-5-5z"/>
+            </svg>
           </div>
-          <h3 className="text-lg font-semibold mb-1">No Plants Yet</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Add your first plant to start tracking its health with AI diagnostics.
-          </p>
-          <Button onClick={() => setShowAddPlant(true)} className="rounded-full gap-2">
-            <Plus className="w-4 h-4" /> Add Your First Plant
-          </Button>
-        </Card>
+          <div className="relative">
+            <div className="w-20 h-20 mx-auto mb-5 rounded-full garden-cta flex items-center justify-center pulse-glow">
+              <Leaf className="w-10 h-10 text-black/80" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Welcome to Your Garden</h3>
+            <p className="text-sm text-muted-foreground/80 mb-6 max-w-xs mx-auto">
+              Add your first plant and let AI help you nurture a thriving indoor jungle.
+            </p>
+            <Button onClick={() => setShowAddPlant(true)} className="rounded-full gap-2 garden-cta text-black/80 font-bold px-8 py-5 text-base shadow-lg">
+              <Plus className="w-5 h-5" /> Plant Your First Seed
+            </Button>
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-3">
           <AnimatePresence>
@@ -736,129 +753,109 @@ function GuideView() {
 
 // ============ SETTINGS VIEW ============
 function SettingsView() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
   useEffect(() => {
     setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
   }, []);
-  const toggleTheme = (checked: boolean) => {
-    const newTheme = checked ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.classList.toggle('dark', checked);
-  };
-  const [settings, setSettings] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-
-  const settingFields = [
-    { key: 'CLOUDFLARE_D1_TOKEN', label: 'Cloudflare D1 Token', placeholder: 'cf-api-token-...', description: 'For Cloudflare D1 database integration' },
-    { key: 'CLOUDFLARE_R2_ACCESS_KEY', label: 'R2 Access Key ID', placeholder: 'Access Key ID', description: 'Cloudflare R2 bucket access key' },
-    { key: 'CLOUDFLARE_R2_SECRET_KEY', label: 'R2 Secret Key', placeholder: 'Secret Access Key', description: 'Cloudflare R2 bucket secret key' },
-    { key: 'GITHUB_TOKEN', label: 'GitHub Token', placeholder: 'ghp_...', description: 'For GitHub integration and backups' },
-    { key: 'WEATHER_API_KEY', label: 'Weather API Key', placeholder: 'API key', description: 'For weather-based care recommendations' },
-    { key: 'OAUTH_CLIENT_ID', label: 'OAuth Client ID', placeholder: 'Client ID', description: 'For user authentication' },
-    { key: 'OAUTH_CLIENT_SECRET', label: 'OAuth Client Secret', placeholder: 'Client Secret', description: 'OAuth client secret key' },
-  ];
-
-  useEffect(() => {
-    fetch('/api/settings')
-      .then(r => r.json())
-      .then(data => { setSettings(data.settings || {}); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, []);
-
-  const saveSettings = async () => {
-    setSaving(true);
-    try {
-      await fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings),
-      });
-      toast.success('Settings saved');
-    } catch {
-      toast.error('Failed to save settings');
-    } finally {
-      setSaving(false);
-    }
-  };
 
   return (
-    <div className="px-4 pt-4 pb-24">
+    <div className="px-4 pt-4 pb-24 space-y-4">
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
           <Settings className="w-7 h-7 text-primary" /> Settings
         </h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Configure integrations and preferences
+          Customise your PlantWise experience
         </p>
       </div>
 
       {/* Appearance */}
-      <Card className="mb-4">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
+      <Card className="garden-card overflow-hidden">
+        <div className="bg-gradient-to-r from-primary/10 to-transparent p-4 pb-3">
+          <CardTitle className="text-base flex items-center gap-2 text-primary">
             <Sun className="w-4 h-4" /> Appearance
           </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium">Dark Mode</p>
-              <p className="text-xs text-muted-foreground">Toggle dark/light theme</p>
+        </div>
+        <CardContent className="p-4 pt-3">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Dark Mode</p>
+                <p className="text-xs text-muted-foreground">Deep garden theme at night</p>
+              </div>
+              <Switch checked={theme === 'dark'} onCheckedChange={(c) => {
+                document.documentElement.classList.toggle('dark', c);
+                setTheme(c ? 'dark' : 'light');
+              }} />
             </div>
-            <Switch
-              checked={theme === 'dark'}
-              onCheckedChange={toggleTheme}
-            />
           </div>
         </CardContent>
       </Card>
 
-      {/* Integrations */}
-      <Card className="mb-4">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Shield className="w-4 h-4" >Cloudflare</Shield> Integrations & API Keys
+      {/* Notifications */}
+      <Card className="garden-card overflow-hidden">
+        <div className="bg-gradient-to-r from-primary/10 to-transparent p-4 pb-3">
+          <CardTitle className="text-base flex items-center gap-2 text-primary">
+            <Bell className="w-4 h-4" /> Notifications
           </CardTitle>
-          <CardDescription>Configure external services for enhanced functionality</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {loading ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full rounded-lg" />)}
+        </div>
+        <CardContent className="p-4 pt-3 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">Watering Reminders</p>
+              <p className="text-xs text-muted-foreground">Get reminded when plants need water</p>
             </div>
-          ) : (
-            settingFields.map(field => (
-              <div key={field.key} className="space-y-1.5">
-                <Label className="text-sm font-medium">{field.label}</Label>
-                <Input
-                  value={settings[field.key] || ''}
-                  onChange={(e) => setSettings(s => ({ ...s, [field.key]: e.target.value }))}
-                  placeholder={field.placeholder}
-                  type="password"
-                  className="h-9 text-sm"
-                />
-                <p className="text-[11px] text-muted-foreground">{field.description}</p>
-              </div>
-            ))
-          )}
-          <Button onClick={saveSettings} disabled={saving} className="w-full mt-2">
-            {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-            {saving ? 'Saving...' : 'Save Settings'}
-          </Button>
+            <Switch defaultChecked />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">Care Tips</p>
+              <p className="text-xs text-muted-foreground">Weekly plant care suggestions</p>
+            </div>
+            <Switch defaultChecked />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Units */}
+      <Card className="garden-card overflow-hidden">
+        <div className="bg-gradient-to-r from-primary/10 to-transparent p-4 pb-3">
+          <CardTitle className="text-base flex items-center gap-2 text-primary">
+            <Droplets className="w-4 h-4" /> Units
+          </CardTitle>
+        </div>
+        <CardContent className="p-4 pt-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">Temperature</p>
+              <p className="text-xs text-muted-foreground">Display temperature in Celsius</p>
+            </div>
+            <div className="flex items-center gap-2 text-xs bg-white/5 rounded-lg p-0.5">
+              <span className="px-2.5 py-1 rounded-md bg-primary/20 text-primary font-medium">°C</span>
+              <span className="px-2.5 py-1 rounded-md text-muted-foreground">°F</span>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       {/* About */}
-      <Card>
-        <CardContent className="p-4 text-center">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
-            <Leaf className="w-6 h-6 text-primary" />
+      <Card className="garden-card overflow-hidden">
+        <div className="bg-gradient-to-r from-primary/10 to-transparent p-4 pb-3">
+          <CardTitle className="text-base flex items-center gap-2 text-primary">
+            <Leaf className="w-4 h-4" /> About
+          </CardTitle>
+        </div>
+        <CardContent className="p-4 pt-3 text-center">
+          <div className="w-16 h-16 mx-auto mb-3 rounded-full garden-cta flex items-center justify-center pulse-glow">
+            <Leaf className="w-8 h-8 text-black/80" />
           </div>
-          <h3 className="font-semibold">Orion PlantWise</h3>
-          <p className="text-xs text-muted-foreground mt-1">v1.0.0 — Smart Plant Disease Detector</p>
-          <p className="text-[11px] text-muted-foreground/70 mt-2">
-            Powered by AI vision, plant pathology databases, and expert horticultural knowledge.
+          <h3 className="font-semibold text-lg">Orion PlantWise</h3>
+          <p className="text-xs text-muted-foreground">v1.0.0</p>
+          <p className="text-xs text-muted-foreground/70 mt-3 leading-relaxed max-w-xs mx-auto">
+            AI-powered plant health companion. Diagnose diseases, track care, and nurture your garden.
+          </p>
+          <p className="text-[11px] text-muted-foreground/50 mt-4">
+            Powered by Cloudflare Workers AI
           </p>
         </CardContent>
       </Card>
@@ -1518,9 +1515,24 @@ export default function HomePage() {
   const { currentView } = useAppStore();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background max-w-lg mx-auto relative">
+    <div className="min-h-screen flex flex-col max-w-lg mx-auto relative garden-glow">
+      {/* Background decorations */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <svg className="absolute -top-20 -left-20 w-64 h-64 text-emerald-500/3 rotate-45" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20c4 0 8-2 8-6.5 0-2-.92-3.69-2.5-5.5C13 10 12 12 10 14c1.5-1.5 2-3.5 2-5.5C12 4.5 9 2 5 2c0 0 6 1 12 6 0 0-2-1.5-4-2.5C12.5 5.5 14 7 14 9c0 3-2 5-4 5 2 0 4-1 5-2 1 1 2 2 2 4 0 3-3 5-5 5 2 0 4-1 5-2 1 1 2 2 2 4 0 3-3 5-5 5 2 0 4-1 5-2 0 4-4 6-8 6-5 0-9-3-9-8 0-4 2-7 6-9z"/>
+        </svg>
+        <svg className="absolute top-1/3 -right-16 w-48 h-48 text-pink-500/3" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C9 2 7 4 7 7c0 1.5.5 2.8 1.5 3.8C7.5 11.5 6 13 6 15c0 1.5.8 2.8 2 3.5-1.2.7-2 2-2 3.5 0 2 2 4 4 4s4-2 4-4c0-1.5-.8-2.8-2-3.5 1.2-.7 2-2 2-3.5 0-2-1.5-3.5-2.5-4.2.8-.8 1.5-2 1.5-3.8 0-3-2-5-5-5z"/>
+        </svg>
+        <svg className="absolute bottom-1/4 -left-12 w-40 h-40 text-amber-500/3 rotate-12" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20c4 0 8-2 8-6.5 0-2-.92-3.69-2.5-5.5C13 10 12 12 10 14c1.5-1.5 2-3.5 2-5.5C12 4.5 9 2 5 2c0 0 6 1 12 6 0 0-2-1.5-4-2.5C12.5 5.5 14 7 14 9c0 3-2 5-4 5 2 0 4-1 5-2 1 1 2 2 2 4 0 3-3 5-5 5 2 0 4-1 5-2 1 1 2 2 2 4 0 3-3 5-5 5 2 0 4-1 5-2 0 4-4 6-8 6-5 0-9-3-9-8 0-4 2-7 6-9z"/>
+        </svg>
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full bg-emerald-500/3 blur-3xl" />
+        <div className="absolute bottom-1/3 right-1/4 w-40 h-40 rounded-full bg-pink-500/3 blur-3xl" />
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 rounded-full bg-amber-500/3 blur-3xl" />
+      </div>
       {/* Main Content */}
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentView}
