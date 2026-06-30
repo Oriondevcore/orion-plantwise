@@ -1,12 +1,29 @@
 import { create } from 'zustand';
 import type { Plant, Diagnosis, CareReminder, CareActivity, ViewType } from '@/types';
 
+interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+}
+
 interface AppState {
   // Navigation
   currentView: ViewType;
   setCurrentView: (view: ViewType) => void;
   selectedPlantId: string | null;
   selectPlant: (id: string | null) => void;
+
+  // Auth
+  user: AuthUser | null;
+  token: string | null;
+  isAuthLoading: boolean;
+  showAuth: boolean;
+  setShowAuth: (v: boolean) => void;
+  login: (email: string, password: string) => Promise<string | null>;
+  register: (email: string, password: string, name: string) => Promise<string | null>;
+  logout: () => void;
+  checkAuth: () => Promise<void>;
 
   // Plants
   plants: Plant[];
@@ -45,11 +62,119 @@ interface AppState {
   setShowAddReminder: (v: boolean) => void;
 }
 
-export const useAppStore = create<AppState>((set) => ({
+function getStoredToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return localStorage.getItem('pw_token');
+  } catch { return null; }
+}
+
+function storeToken(token: string | null) {
+  if (typeof window === 'undefined') return;
+  try {
+    if (token) localStorage.setItem('pw_token', token);
+    else localStorage.removeItem('pw_token');
+  } catch {}
+}
+
+function getStoredUser(): AuthUser | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem('pw_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function storeUser(user: AuthUser | null) {
+  if (typeof window === 'undefined') return;
+  try {
+    if (user) localStorage.setItem('pw_user', JSON.stringify(user));
+    else localStorage.removeItem('pw_user');
+  } catch {}
+}
+
+export function getAuthHeaders(): Record<string, string> {
+  const token = getStoredToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+export const useAppStore = create<AppState>((set, get) => ({
   currentView: 'home',
   setCurrentView: (view) => set({ currentView: view }),
   selectedPlantId: null,
   selectPlant: (id) => set({ selectedPlantId: id }),
+
+  user: getStoredUser(),
+  token: getStoredToken(),
+  isAuthLoading: true,
+  showAuth: false,
+  setShowAuth: (v) => set({ showAuth: v }),
+
+  login: async (email, password) => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (data.status !== 'ok') return data.message || 'Login failed';
+      storeToken(data.token);
+      storeUser(data.user);
+      set({ user: data.user, token: data.token, showAuth: false });
+      return null;
+    } catch {
+      return 'Auth service unavailable';
+    }
+  },
+
+  register: async (email, password, name) => {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name }),
+      });
+      const data = await res.json();
+      if (data.status !== 'ok') return data.message || 'Registration failed';
+      storeToken(data.token);
+      storeUser(data.user);
+      set({ user: data.user, token: data.token, showAuth: false });
+      return null;
+    } catch {
+      return 'Auth service unavailable';
+    }
+  },
+
+  logout: () => {
+    storeToken(null);
+    storeUser(null);
+    set({ user: null, token: null });
+  },
+
+  checkAuth: async () => {
+    const token = getStoredToken();
+    if (!token) {
+      set({ isAuthLoading: false, showAuth: true });
+      return;
+    }
+    try {
+      const res = await fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.status === 'ok') {
+        storeUser(data.user);
+        set({ user: data.user, token, isAuthLoading: false, showAuth: false });
+      } else {
+        storeToken(null);
+        storeUser(null);
+        set({ user: null, token: null, isAuthLoading: false, showAuth: true });
+      }
+    } catch {
+      set({ isAuthLoading: false });
+    }
+  },
 
   plants: [],
   setPlants: (plants) => set({ plants }),

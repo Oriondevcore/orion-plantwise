@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useAppStore } from '@/store/app';
+import { AuthDialog } from '@/components/auth-dialog';
 import type { Plant, Diagnosis, CareReminder, CareActivity } from '@/types';
 import { toast } from 'sonner';
 
@@ -1512,10 +1513,26 @@ function AddPlantDialog() {
 
 // ============ MAIN PAGE ============
 export default function HomePage() {
-  const { currentView } = useAppStore();
+  const { currentView, checkAuth, isAuthLoading, user } = useAppStore();
+  useEffect(() => { checkAuth(); }, [checkAuth]);
+
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center max-w-lg mx-auto garden-glow gap-4">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-sky-400 shadow-lg shadow-emerald-500/20">
+          <Leaf size={32} className="text-white" />
+        </div>
+        <div className="h-1 w-32 overflow-hidden rounded-full bg-white/10">
+          <div className="h-full w-full animate-pulse rounded-full bg-gradient-to-r from-emerald-400 to-sky-400" />
+        </div>
+        <p className="text-sm text-white/40">Loading your garden...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col max-w-lg mx-auto relative garden-glow">
+      <AuthDialog />
       {/* Background decorations */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <svg className="absolute -top-20 -left-20 w-64 h-64 text-emerald-500/3 rotate-45" viewBox="0 0 24 24" fill="currentColor">
