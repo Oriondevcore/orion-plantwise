@@ -1,0 +1,21 @@
+{
+  "name": "Orion PlantWise",
+  "short_name": "PlantWise",
+  "description": "AI-powered plant health diagnostics. Identify species, detect diseases, and get step-by-step treatment plans.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080809",
+  "theme_color": "#00e5ff",
+  "icons": [
+    {
+      "src": "/Orion-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/Orion-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

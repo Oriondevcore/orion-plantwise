@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   icons: {
     icon: "/Orion-logo.png",
   },
+  manifest: "/manifest.json",
+  other: {
+    "theme-color": "#00e5ff",
+  },
 };
 
 export default function RootLayout({
